@@ -35,6 +35,8 @@ findGameArchiveHandler(const MOBase::IOrganizer* organizer)
   return organizer->gameFeatures()->gameFeature<MOBase::GameArchiveHandler>();
 }
 
+// Combine the existing Bethesda archive list with a game handler's supported
+// formats. Every delegated candidate must be accepted by supportsArchive().
 QFileInfoList findExtractableArchives(
     const QDir& directory, bool includeBuiltInArchives,
     const std::shared_ptr<const MOBase::GameArchiveHandler>& archiveHandler)
@@ -51,11 +53,15 @@ QFileInfoList findExtractableArchives(
     return archives;
   }
 
+  // Built-in and delegated name filters can match the same archive. Normalize
+  // case and path spelling to show each file only once.
   QSet<QString> seenPaths;
   for (const auto& archiveInfo : archives) {
     seenPaths.insert(QDir::cleanPath(archiveInfo.absoluteFilePath()).toLower());
   }
 
+  // An empty handler filter means it must inspect every file; the handler's
+  // supportsArchive() decision remains authoritative for each candidate.
   QStringList delegatedFilters = archiveHandler->supportedArchiveNameFilters();
   QFileInfoList allFiles =
       delegatedFilters.isEmpty()
