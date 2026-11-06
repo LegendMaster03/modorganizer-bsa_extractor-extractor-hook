@@ -1,6 +1,6 @@
 # modorganizer-bsa_extractor
 
-This change adds generic game-feature archive dispatch to `bsa_extractor`.
+This repository extends the Mod Organizer 2 `bsa_extractor` plugin with game-feature archive dispatch. It retains the built-in Bethesda archive extraction path and can delegate other formats to the active game's `MOBase::GameArchiveHandler`.
 
 ## Maintainer Notes
 
@@ -27,4 +27,4 @@ This change adds generic game-feature archive dispatch to `bsa_extractor`.
 Companion game-plugin work is still required for any non-bsatk format: the game plugin
 must register `GameArchiveHandler` through MO2 game features.
 
-This branch now expects the canonical `uibase` `GameArchiveHandler` API to be available.
+This integration requires a matching `uibase` that exposes the canonical `GameArchiveHandler` API. A game plugin must register that feature before a non-bsatk archive can be delegated.
